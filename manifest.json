@@ -1,0 +1,38 @@
+{
+  "name": "MemFlix",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Practise vocabulary with real-world examples",
+  "homepage_url": "http://example.com",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "page": "src/bg/background.html",
+    "persistent": true
+  },
+  "permissions": [
+    "webRequest",
+    "activeTab",
+    "storage",
+    "*://*/"
+  ],
+  "browser_action": {
+    "default_icon": "icons/icon19.png",
+    "default_title": "BrowserAction",
+    "default_popup": "src/browser_action/browser_action.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.netflix.com/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
