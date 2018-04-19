@@ -4,6 +4,7 @@ mocha.setup('bdd');
 mocha.reporter('html');
 
 testBackground();
+testTranslation();
 
 mocha.run();
 
@@ -109,5 +110,42 @@ function testBackground() {
       }
       return chai.expect(parse(subs)).to.deep.equal(words); 
     });
+  });
+};
+
+function testTranslation() {
+  describe("Translation", function() {
+    it("Returns empty string if no translation", function() {
+      return Translation.get('', 'pl', 'en').
+        then((t) => chai.expect(t.translations).to.deep.equal([])); 
+    });
+    it("Returns empty string if word does not exist", function() {
+      return Translation.get('xyz', 'pl', 'en').
+        then((t) => chai.expect(t.translations).to.deep.equal([])); 
+    });    
+    it("Translates simple word from EN to PL", function() {
+      return Translation.get('moth', 'en', 'pl').
+        then((t) => chai.expect(t.translations).to.contain('ćma')); 
+    });
+    it("Translates contraction from EN to PL", function() {
+      return Translation.get("we'll", 'en', 'pl').
+        then((t) => chai.expect(t.descriptions[0]).to.contain('będziemy'));
+    });
+    it("Provides full expression for contraction in EN", function() {
+      return Translation.get("you'll", 'en', 'pl').
+        then((t) => chai.expect(t.descriptions[0]).to.contain("you will")); 
+    });
+    it("Should not include tags", function() {
+      return Translation.get("I'll", 'en', 'pl').
+        then((t) => chai.expect(t.descriptions[0]).to.not.contain("<i>"));
+    }); 
+    it("Should not propose duplicates", function() {
+      return Translation.get('dwa', 'pl', 'en').
+        then((t) => chai.expect(t.translations.length).to.be.equal(_.uniq(t.translations).length));
+    }); 
+    it("Proposes several meanings", function() {
+      return Translation.get('zamek', 'pl', 'en').
+        then((t) => chai.expect(t.translations).to.contain('castle').and.contain('lock')); 
+    }); 
   });
 };
