@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener((newRequest, sender, sendResponse) => {
   let newWords = parse(newRequest.data);
-  setWords(newWords);
+  Storage.setWords(newWords);
   return true; // Keep the channel open
 });
 

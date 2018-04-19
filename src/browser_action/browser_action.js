@@ -7,7 +7,7 @@ let getNextWord = (function () {
   console.log('next!');
   
   return function() {
-    getWords().then((storedWords) => {
+    Storage.getWords().then((storedWords) => {
       let words = Object.values(storedWords);
       if (!words[index]) return;
       document.getElementById('word').innerText = capitalizeFirstLetter(words[index].word);

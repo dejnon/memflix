@@ -10,9 +10,9 @@ mocha.run();
 function testBackground() {
   describe("Storage", function() {
     function resetStorage() {
-      return setWords({}).
+      return Storage.setWords({}).
         then((words) => chai.expect(words).to.deep.equal({})).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal({}));
     }
 
@@ -23,9 +23,9 @@ function testBackground() {
       };
 
       return resetStorage().
-        then(() => addWords(newWords)).
+        then(() => Storage.addWords(newWords)).
         then((words) => chai.expect(words).to.deep.equal(newWords)).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal(newWords));    
     });
 
@@ -40,13 +40,13 @@ function testBackground() {
       let combinedWords = Object.assign(existingWords, newWords);
 
       return resetStorage().
-        then(() => addWords(existingWords)).
+        then(() => Storage.addWords(existingWords)).
         then((words) => chai.expect(words).to.deep.equal(existingWords)).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal(existingWords)).
-        then(() => addWords(newWords)).
+        then(() => Storage.addWords(newWords)).
         then((words) => chai.expect(words).to.deep.equal(combinedWords)).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal(combinedWords));
     });
 
@@ -66,13 +66,13 @@ function testBackground() {
       };
 
       return resetStorage().
-        then(() => addWords(existingWords)).
+        then(() => Storage.addWords(existingWords)).
         then((words) => chai.expect(words).to.deep.equal(existingWords)).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal(existingWords)).
-        then(() => addWords(newWords)).
+        then(() => Storage.addWords(newWords)).
         then((words) => chai.expect(words).to.deep.equal(combinedWords)).
-        then(() => getWords()).
+        then(() => Storage.getWords()).
         then((words) => chai.expect(words).to.deep.equal(combinedWords)); 
     });
   });
