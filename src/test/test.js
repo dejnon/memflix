@@ -4,6 +4,7 @@ mocha.setup('bdd');
 mocha.reporter('html');
 
 testBackground();
+testParser();
 testTranslation();
 
 mocha.run();
@@ -77,15 +78,17 @@ function testBackground() {
         then((words) => chai.expect(words).to.deep.equal(combinedWords)); 
     });
   });
+};
 
+function testParser() {
   describe("Parsing", function() {
     it("Computes a hash of the word", function() {
-      chai.expect(stripKey("aa")).to.equal("aa"); 
-      chai.expect(stripKey("they'll")).to.equal("theyll"); 
-      chai.expect(stripKey("We`re")).to.equal("were"); 
-      chai.expect(stripKey("rock-bottom")).to.equal("rockbottom"); 
-      chai.expect(stripKey("10")).to.equal(undefined); 
-      chai.expect(stripKey("$10")).to.equal(undefined);
+      chai.expect(Parser.stripKey("aa")).to.equal("aa"); 
+      chai.expect(Parser.stripKey("they'll")).to.equal("theyll"); 
+      chai.expect(Parser.stripKey("We`re")).to.equal("were"); 
+      chai.expect(Parser.stripKey("rock-bottom")).to.equal("rockbottom"); 
+      chai.expect(Parser.stripKey("10")).to.equal(undefined); 
+      chai.expect(Parser.stripKey("$10")).to.equal(undefined);
     });
 
     it("Parses raw XML into hash of words", function() {
@@ -108,7 +111,7 @@ function testBackground() {
         'son':          { word: 'son' ,          trans: 'To', count: 0},
         'you':          { word: 'you',           trans: 'To', count: 0},
       }
-      return chai.expect(parse(subs)).to.deep.equal(words); 
+      return chai.expect(Parser.xmlToWords(subs)).to.deep.equal(words); 
     });
   });
 };
