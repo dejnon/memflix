@@ -21,16 +21,24 @@ let Translation = {
   },
 
   get: function(wordToTranslate, sourceLanguageCode, targetLanguageCode) {
-    let url = `https://glosbe.com/gapi/translate?`+
-              `from=${sourceLanguageCode}&`+
-              `dest=${targetLanguageCode}&`+
-              `phrase=${wordToTranslate}&`+
-              `format=json`
+    let url = 
+      (word) => `https://glosbe.com/gapi/translate?`+
+                `from=${sourceLanguageCode}&`+
+                `dest=${targetLanguageCode}&`+
+                `phrase=${word}&`+
+                `format=json`
+    let extractResults = (response) => response.data.tuc;
 
-    return axios.get(url)
-      .then(function (response) {
-        let results = response.data.tuc;
-        console.log( Translation._exactTranslation(results));
+    return axios.get(url(wordToTranslate))
+      .then(extractResults)
+      .then((results) => {
+        if (!_.isEmpty(results)) return results;
+        let word = _.toLower(wordToTranslate);
+        return axios.
+          get(url(word)).
+          then(extractResults);
+      })
+      .then((results) => {
         return {
           translations: Translation._exactTranslation(results, targetLanguageCode),
           descriptions: Translation._verboseDescription(results, targetLanguageCode)
@@ -40,4 +48,10 @@ let Translation = {
         console.log(error);
       });
   },
+
+  getLog: function(wordToTranslate, sourceLanguageCode, targetLanguageCode) {
+    return Translation.
+      get(wordToTranslate, sourceLanguageCode, targetLanguageCode).
+      then((t) => { console.log(t); return t; });
+  }
 }; 

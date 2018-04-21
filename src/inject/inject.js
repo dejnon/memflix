@@ -5,7 +5,6 @@ console.log("INJECTED CODE");
 (function() {
   var origOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function() {
-    console.log('request started!');
     this.addEventListener('load', function() {
       if (!this.responseURL.match(/\\/\\?o\\=/g)) return;
       console.log(this)

@@ -3,13 +3,14 @@
 mocha.setup('bdd');
 mocha.reporter('html');
 
-testBackground();
+testStorage();
 testParser();
 testTranslation();
+testBackground();
 
 mocha.run();
 
-function testBackground() {
+function testStorage() {
   describe("Storage", function() {
     function resetStorage() {
       return Storage.setWords({}).
@@ -149,6 +150,58 @@ function testTranslation() {
     it("Proposes several meanings", function() {
       return Translation.get('zamek', 'pl', 'en').
         then((t) => chai.expect(t.translations).to.contain('castle').and.contain('lock')); 
+    });
+    it("It re-tries with downcase translation if no results found", function() {
+      // @TODO - check both calls are made
+      return Translation.get('That', 'en', 'pl').
+        then((t) => chai.expect(t.translations).to.contain('tamten')); 
     }); 
+  });
+};
+
+function testBackground() {
+  describe("Background", function() {
+    it("Skips execution if no words present", function() {
+      // @TODO check if nothing called
+      return fetchTranslations({}).
+        then((words) => chai.expect(words).to.deep.equal({}));    
+    });
+    it("Translates single word", function() {
+      let newWords = {
+        'this': { word: 'this', trans: '', new: true, discarded: false},
+      };
+
+      return fetchTranslations(newWords).
+        then((words) => chai.expect(words['this'].trans).to.equal('ten'));           
+    });
+
+    it("Handles missing translations", function() {
+      let newWords = {
+        'xyz':  { word: 'xyz',  trans: '', new: true, discarded: false},
+        'this': { word: 'this', trans: '', new: true, discarded: false},
+      };
+
+      return fetchTranslations(newWords).
+        then((words) => {
+          chai.expect(words['this'].trans).to.equal('ten');
+          chai.expect(words['xyz'].trans).to.equal('')
+        });           
+    });
+
+    it("Translates multiple words", function() {
+      let newWords = {
+        'this': { word: 'this', trans: '', new: true, discarded: false},
+        'thaw': { word: 'thaw', trans: '', new: true, discarded: false},
+      };
+
+      return Storage.setWords(newWords).
+        then((w) => fetchTranslations(w)).
+        then((t) => Storage.setWords(t)).
+        then(() => Storage.getWords()).
+        then((words) => {
+          chai.expect(words['this'].trans).to.equal('ten');
+          chai.expect(words['thaw'].trans).to.equal('odwilż')
+        });           
+    });
   });
 };
