@@ -28,7 +28,6 @@ let Translation = {
                 `phrase=${word}&`+
                 `format=json`
     let extractResults = (response) => response.data.tuc;
-
     return axios.get(url(wordToTranslate))
       .then(extractResults)
       .then((results) => {
@@ -40,6 +39,7 @@ let Translation = {
       })
       .then((results) => {
         return {
+          word: wordToTranslate,
           translations: Translation._exactTranslation(results, targetLanguageCode),
           descriptions: Translation._verboseDescription(results, targetLanguageCode)
         };
@@ -53,5 +53,5 @@ let Translation = {
     return Translation.
       get(wordToTranslate, sourceLanguageCode, targetLanguageCode).
       then((t) => { console.log(t); return t; });
-  }
+  },
 }; 
