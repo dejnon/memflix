@@ -6,6 +6,7 @@ mocha.reporter('html');
 testStorage();
 testParser();
 testTranslation();
+testBrowserAction();
 
 mocha.run();
 
@@ -155,5 +156,51 @@ function testTranslation() {
       return Translation.get('That', 'en', 'pl').
         then((t) => chai.expect(t.translations).to.contain('tamten')); 
     }); 
+  });
+};
+
+function testBrowserAction() {
+  function browserActionWindow(id) {
+    return new Promise((resolve, reject) => {
+      let iframe = `
+        <iframe data-testcase="${id}" hidden="hidden" src="../browser_action/browser_action.html">
+        </iframe>
+      `;
+      $('body').append(iframe);
+      let a = () => resolve($(`iframe[data-testcase="${id}"]`).contents().find('body'));
+      setTimeout(a, 500);
+    })
+  }
+  function clickNext(page) {
+    page.find('button').click();
+    return new Promise((resolve, reject) => {
+      let res = () => resolve(page);
+      setTimeout(res, 300);
+    });
+  }
+  describe("Definitions", function() {
+    it("Shows default values when no words detected", function() {
+      return Storage.setWords({}).
+        then(() => browserActionWindow(this.test.title)).
+        then((page) => page.find('h1#word').text()).
+        then((wordText) => chai.expect(wordText).to.equal('Unknown'));
+    });
+    it("Shows first (alphabetically) of the saved words", function() {
+      return Storage.setWords({'this' : 'This', 'that': 'That'}).
+        then(() => browserActionWindow(this.test.title)).
+        then((page) => {
+          chai.expect(page.find('h1#word').text()    ).to.equal('That');
+          chai.expect(page.find('p#translate').text()).to.contain('tamten');
+        });
+    });
+    it("Shows next word when next is pressed", function() {
+      return Storage.setWords({'this' : 'This', 'that': 'That'}).
+        then(() => browserActionWindow(this.test.title)).
+        then(clickNext).
+        then((page) => {
+          chai.expect(page.find('h1#word').text()    ).to.equal('This');
+          chai.expect(page.find('p#translate').text()).to.contain('ten');
+        });
+    });
   });
 };
