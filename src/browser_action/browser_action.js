@@ -19,11 +19,11 @@ let getNextWord = (function () {
       let words = Object.keys(storedWords);
       let wordToTranslate = storedWords[words[index]];
       console.log(wordToTranslate);
-      Translation.getLog(wordToTranslate.word, 'en', 'pl').
+      Translation.getLog(wordToTranslate, 'en', 'pl').
         then((result) => {
           if(_.isEmpty(result.translations)) getNextWord();
           document.getElementById('word').innerText = capitalizeFirstLetter(result.word);
-          document.getElementById('translate').innerText = trimIfNeeded(result.translations) || 'No translation';
+          document.getElementById('translate').innerText = trimIfNeeded(result.translations);
           index++;
         })
     });

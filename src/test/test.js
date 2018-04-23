@@ -20,8 +20,8 @@ function testStorage() {
 
     it("Adds new words if none are set", function() {
       let newWords = {
-        'that': { word: 'That', trans: 'Tamto', new: true, discarded: false},
-        'this': { word: 'This', trans: 'To', new: true, discarded: false},
+        'that': 'That',
+        'this': 'This',
       };
 
       return resetStorage().
@@ -33,11 +33,11 @@ function testStorage() {
 
     it("Appends new words to the existing ones", function() {
       let existingWords = {
-        'that': { word: 'That', trans: 'Tamto', new: true, discarded: false},
-        'this': { word: 'This', trans: 'To', new: true, discarded: false},
+        'that': 'That',
+        'this': 'This',
       };
       let newWords = {
-        'thaw': { word: 'Thaw', trans: 'Odwilz', new: true, discarded: false},
+        'thaw': 'Thaw',
       };
       let combinedWords = Object.assign(existingWords, newWords);
 
@@ -54,12 +54,12 @@ function testStorage() {
 
     it("Adds new words but skips the words that already exist", function() {
       let existingWords = {
-        'that': { word: 'That', trans: 'Tamto', new: true, discarded: false},
-        'this': { word: 'This', trans: 'To', new: true, discarded: false},
+        'that': 'That',
+        'this': 'This',
       };
       let newWords = {
-        'thaw': { word: 'Thaw', trans: 'Odwilz', new: true, discarded: false},
-        'this': { word: 'This', trans: 'Shouldnt be here', new: true, discarded: false},
+        'thaw': 'Thaw',
+        'this': 'this is not',
       };
       let combinedWords = {
         'that': existingWords['that'],
@@ -100,16 +100,16 @@ function testParser() {
         </body>
       `;
       let words = {
-        'anakind':      { word: 'Anakind',       trans: 'To', count: 0},
-        "iam":          { word: "I'am",          trans: 'To', count: 0},
-        'your':         { word: 'yours',         trans: 'To', count: 0},
-        'father':       { word: 'father',        trans: 'To', count: 0},
-        'luke':         { word: 'Luke',          trans: 'To', count: 0},
-        'hello':        { word: 'Hello',         trans: 'To', count: 0},
-        'my':           { word: 'MY',            trans: 'To', count: 0},
-        'rediscovered': { word: 're-discovered', trans: 'To', count: 0},
-        'son':          { word: 'son' ,          trans: 'To', count: 0},
-        'you':          { word: 'you',           trans: 'To', count: 0},
+        'anakind':      'Anakind',
+        "iam":          "I'am",
+        'your':         'yours',
+        'father':       'father',
+        'luke':         'Luke',
+        'hello':        'Hello',
+        'my':           'MY',
+        'rediscovered': 're-discovered',
+        'son':          'son' ,
+        'you':          'you',
       }
       return chai.expect(Parser.xmlToWords(subs)).to.deep.equal(words); 
     });

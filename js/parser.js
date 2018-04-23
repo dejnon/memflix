@@ -17,21 +17,17 @@ let Parser = {
       split(" ");
   },
 
-  wordTemplate: function(word) {
-    return { word: word.replace(/^-/, ''), trans: 'To', count: 0 };
-  },
-
   xmlToWords: function(rawText) {
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(rawText.trim(), "text/xml");
+    let parser       = new DOMParser();
+    let xmlDoc       = parser.parseFromString(rawText.trim(), "text/xml");
     let allLineNodes = xmlDoc.getElementsByTagName("p");
-    let uniqWords = new Object();
+    let uniqWords    = new Object();
 
     for (let lineNode of allLineNodes) {
       for (let rawWord of Parser.extractWords(lineNode)) {
         let wordKey = Parser.stripKey(rawWord);
         if(!wordKey) continue; 
-        uniqWords[wordKey] = Parser.wordTemplate(rawWord);
+        uniqWords[wordKey] = rawWord.replace(/^-/, '');
       }
     }
     return uniqWords;
